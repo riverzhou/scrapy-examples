@@ -52,8 +52,8 @@ class MySQLStorePipeline(object):
                [item[i].encode('utf-8') for i in l]
             )
             self.conn.commit()
-        except MySQLdb.Error, e:
-            print "Error %d: %s" % (e.args[0], e.args[1])
+        except MySQLdb.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
 
         return item
 
@@ -65,7 +65,7 @@ class RedisPipeline(object):
 
     def process_item(self, item, spider):
         if not item['id']:
-            print 'no id item!!'
+            print('no id item!!')
 
         str_recorded_item = self.r.get(item['id'])
         final_item = None
@@ -73,7 +73,7 @@ class RedisPipeline(object):
             final_item = item
         else:
             ritem = eval(self.r.get(item['id']))
-            final_item = dict(item.items() + ritem.items())
+            final_item = dict(list(item.items()) + list(ritem.items()))
         self.r.set(item['id'], final_item)
 
     def close_spider(self, spider):
